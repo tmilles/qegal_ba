@@ -1,0 +1,53 @@
+import org.softlang.qegal.buildins.decompose.*
+import org.softlang.qegal.buildins.*
+import org.softlang.qegal.buildins.string.*
+import org.apache.jena.reasoner.rulesys.builtins.*
+
+/* Default softlang namespace */
+@prefix sl: <http://org.softlang.com/>.
+/* Qegal system namespace */
+@prefix sys: <http://org.softlang.com/qegal/>.
+@prefix ex: <http://example.com/>.
+
+instance (ex:F1, ex:isA, ex:Banana).
+instance (ex:F1, ex:elementOf, ex:Fruit).
+instance (ex:F2, ex:isA, ex:Banana).
+instance (ex:F2, ex:elementOf, ex:Fruit).
+instance (ex:F3, ex:isA, ex:Banana).
+instance (ex:F3, ex:elementOf, ex:Fruit).
+instance (ex:F4, ex:isA, ex:Apple).
+instance (ex:F4, ex:elementOf, ex:Fruit).
+
+instance (ex:P1, ex:elementOf, ex:Package).
+instance (ex:P2, ex:elementOf, ex:Package).
+
+instance (ex:F1, ex:partOf, ex:P1).
+instance (ex:F2, ex:partOf, ex:P1).
+instance (ex:F3, ex:partOf, ex:P2).
+instance (ex:F4, ex:partOf, ex:P2).
+
+(?box, ex:isA, ex:Box)
+(?ball, ex:isIn, ?box)
+(?ball, ex:hasColor, ?color)
+(?ball2, ex:isIn, ?box)
+(?ball2, ex:hasColor, ?color2)
+NotEqual(?color, ?color2)
+->
+(?box, ex:hasSomeColors, "No").
+
+(?box, ex:isA, ex:Box)
+NoValue(?box, ex:hasSomeColors)
+->
+(?box, ex:hasSomeColors, "Yes").
+
+(?f, ex:partOf, ?p)
+(?f, ex:isA, ?type)
+->
+(?p, ex:contains, ?type).
+
+(?p, ex:contains, ?type)
+(?p, ex:contains, ?type2)
+NotEqual(?type, ?type2)
+->
+(?p, ex:isPacked, ex:NotCorrect).
+
